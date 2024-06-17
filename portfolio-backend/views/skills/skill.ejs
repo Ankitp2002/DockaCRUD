@@ -1,0 +1,81 @@
+<%- include ('../includes/header') %>
+<div class="container mt-4">
+  <h1>Skills</h1>
+  <a href="./skills/new" class="btn btn-primary mb-3">Add New Skill</a>
+  <ul class="list-group">
+    <% skills.forEach(skill => { %>
+      <li class="list-group-item">
+        <div id="skill<%= skill._id %>">
+          <p>Name: <%= skill.name %></p>
+          <p>Description: <%= skill.description %></p>
+          <a href="#" class="btn btn-warning btn-sm float-right ml-2 editBtn" data-skill-id="<%= skill._id %>"><i class="fas fa-edit"></i></a>
+          <form action="/skills/<%= skill._id %>" method="POST" class="float-right">
+            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+          </form>
+        </div>
+        <div id="editForm<%= skill._id %>" style="display: none;">
+          <form id="form<%= skill._id %>" data-skill-id="<%= skill._id %>">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name<%= skill._id %>" name="name" value="<%= skill.name %>"  pattern="[A-Za-z]+" title="Please enter only letters">
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea class="form-control" id="description<%= skill._id %>" name="description" oninput="validateDescription(this)" title="Please enter only letters"><%= skill.description %></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </li>
+    <% }) %>    
+  </ul>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const editButtons = document.querySelectorAll('.editBtn');
+
+    editButtons.forEach(button => {
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        const skillId = button.getAttribute('data-skill-id');
+        const skillDiv = document.getElementById(`skill${skillId}`);
+        const editFormDiv = document.getElementById(`editForm${skillId}`);
+        skillDiv.style.display = 'none';
+        editFormDiv.style.display = 'block';
+      });
+    });
+
+    const editForms = document.querySelectorAll('form[id^="form"]');
+    
+    editForms.forEach(form => {
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const skillId = form.getAttribute('data-skill-id');
+        const formData = new FormData(form);
+        const requestData = {};
+        formData.forEach((value, key) => {
+          requestData[key] = value;
+        });
+        fetch(`/skills/${skillId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          }
+          throw new Error('Failed to update skill');
+        })
+        .catch(error => {
+          console.error('Error updating skill:', error);
+        });
+      });
+    });
+  });
+</script>
+
+<%- include ('../includes/footer') %>

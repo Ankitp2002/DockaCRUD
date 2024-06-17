@@ -1,0 +1,46 @@
+<%- include ('includes/header') %>
+<div class="container">
+  <h1 class="mt-4">Welcome to..</h1>
+  <p class="lead">Skills and Projects</p>
+</div>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2>Skills</h2>
+    </div>
+    <ul class="list-group list-group-flush">
+      <% skills.forEach(skill => { %>
+        
+        <li class="list-group-item">
+          <p>Name: <%= skill.name %></p>
+          <p>Description: <%= skill.description %></p>
+          <!-- <form action="/skills/<%= skill._id %>" method="POST" class="float-right">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form> -->
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2>Projects</h2>
+    </div>
+    <ul class="list-group list-group-flush">
+      <% projects.forEach(project => { %>
+        <li class="list-group-item">
+          <p>Name: <%= project.name %></p>
+          <p>TechStack: <%= project.techStack %></p>
+          <p>Description: <%= project.description %></p>
+          <!-- <form action="/projects/<%= project._id %>" method="POST" class="float-right">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form> -->
+        </li>
+      <% }) %> 
+    </ul>
+  </div>
+</div>
+<%- include ('includes/footer') %>

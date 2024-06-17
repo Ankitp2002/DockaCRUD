@@ -1,0 +1,48 @@
+services:
+  frontend:
+    # image: frontend-image:latest
+    build:
+      context: portfolio-frontend
+      target: development
+    ports: 
+      - 3001:3000
+    stdin_open: true
+    volumes:
+      - ./portfolio-frontend:/usr/src/app
+    restart: always
+    networks:
+      - react-express
+    depends_on:
+      - backend
+
+  backend:
+    # image: backend-image:latest
+    restart: always
+    build:
+      context: portfolio-backend
+      target: development
+    volumes:
+      - ./portfolio-backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mongo
+    networks:
+      - express-mongo
+      - react-express
+    ports: 
+      - 3000:3000
+  mongo:
+    restart: always
+    image: mongo:4.2.0
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - express-mongo
+    expose:
+      - 27017
+networks:
+  react-express:
+  express-mongo:
+
+volumes:
+  mongo_data:

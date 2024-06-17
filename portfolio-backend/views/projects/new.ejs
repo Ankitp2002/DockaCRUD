@@ -1,0 +1,21 @@
+<%- include ('../includes/header') %>
+<div class="container mt-4">
+  <h1>New Project</h1>
+  <form action="/projects" method="POST">
+    <div class="form-group">
+      <label for="name">Project Name</label>
+      <input type="text" class="form-control" id="name" name="name" required pattern="[A-Za-z]+" title="Please enter only letters">
+    </div>
+    <div class="form-group">
+      <label for="description">Project techStack</label>
+      <textarea class="form-control" id="techStack" name="techStack" oninput="validateDescription(this)" title="Please enter only letters"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="description">Project Description</label>
+      <textarea class="form-control" id="description" name="description" oninput="validateDescription(this)" title="Please enter only letters"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Project</button>
+  </form>
+</div>
+
+<%- include ('../includes/footer') %>

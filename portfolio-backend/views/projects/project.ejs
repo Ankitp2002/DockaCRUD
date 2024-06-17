@@ -1,0 +1,94 @@
+<%- include ('../includes/header') %>
+<div class="container mt-4">
+  <h1>Projects</h1>
+  <a href="./projects/new" class="btn btn-primary mb-3">Add New Project</a>
+  <ul class="list-group">
+    <% projects.forEach(project => { %>
+      <li class="list-group-item">
+        <div id="project<%= project._id %>">
+          <p>Name: <%= project.name %></p>
+          <p>TechStack: <%= project.techStack %></p>
+          <p>Description: <%= project.description %></p>
+          <a href="#" class="btn btn-warning btn-sm float-right ml-2 editBtn" data-project-id="<%= project._id %>"><i class="fas fa-edit"></i></a>
+          <form action="/projects/<%= project._id %>" method="POST" class="float-right">
+            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+          </form>
+        </div>
+        <div id="editForm<%= project._id %>" style="display: none;">
+          <form id="form<%= project._id %>" data-project-id="<%= project._id %>">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" name="name" value="<%= project.name %>"  pattern="[A-Za-z]+" title="Please enter only letters">
+            </div>
+            <div class="form-group">
+              <label for="techStack">Tech Stack</label>
+              <input type="text" class="form-control" id="techStack" name="techStack" value="<%= project.techStack %>"  pattern="[A-Za-z]+" title="Please enter only letters">
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea class="form-control" id="description" name="description"  oninput="validateDescription(this)" title="Please enter only letters"><%= project.description %></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </li>
+    <% }) %>    
+  </ul>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const editButtons = document.querySelectorAll('.editBtn');
+
+    editButtons.forEach(button => {
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        const projectId = button.getAttribute('data-project-id');
+        const projectDiv = document.getElementById(`project${projectId}`);
+        const editFormDiv = document.getElementById(`editForm${projectId}`);
+        projectDiv.style.display = 'none';
+        editFormDiv.style.display = 'block';
+      });
+    });
+
+    const editForms = document.querySelectorAll('form[id^="form"]');
+    
+    editForms.forEach(form => {
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const projectId = form.getAttribute('data-project-id');
+        const formData = new FormData(form);
+        const requestData = {};
+        formData.forEach((value, key) => {
+          requestData[key] = value;
+        });
+        fetch(`/projects/${projectId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        })
+        .then(response => {
+          
+          if (response.ok) {
+            window.location.reload();
+          }
+          throw new Error('Failed to update project');
+        })
+        .catch(error => {
+          console.error('Error updating project:', error);
+        });
+      });
+    });
+  });
+
+  function updateProjectDetails(project) {
+    // Update the project details in the DOM based on the updatedProject object
+    // You can replace the content of projectDiv with the updated project details
+  }
+</script>
+
+
+
+<%- include ('../includes/footer') %>
